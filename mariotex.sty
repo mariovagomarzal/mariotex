@@ -1,0 +1,378 @@
+% mariotex.sty
+
+\ProvidesPackage{mariotex}[2022/07/12 package mariotex]
+
+% SECTION: Argument processing
+% Default arguments
+\newif\ifmarioenglish\marioenglishtrue % Language (english as default)
+
+\newif\ifmariomargins\mariomarginstrue % Margins
+
+\newif\ifmarionodraft\marionodrafttrue % No draft mode
+
+\newif\ifmarionotitle\marionotitlefalse % Custom title style (for article titles)
+% TODO: Add a title style for book titles
+% TODO: Custom style for chapters and sections
+
+\newif\ifmariopkg\mariopkgtrue % Basic packages (math too)
+\newif\ifmariobasicpkg\mariobasicpkgtrue % Basic packages
+    \newif\ifmarioxcolor\marioxcolortrue % 'xcolor' package
+    \newif\ifmariographicx\mariographicxtrue % 'graphicx' package
+    \newif\ifmariofloats\mariofloatstrue % 'Floats' package
+    \newif\ifmariosubfigures\mariosubfigurestrue % 'Subfigures' package
+    \newif\ifmariohyperref\mariohyperreftrue % 'Hyperref' package
+    \newif\ifmarioeurosym\marioeurosymtrue % 'Eurosym' package
+\newif\ifmariomath\mariomathtrue % Math packages and theorem utilities
+    \newif\ifmariomathpkg\mariomathpkgtrue % Math packages
+        \newif\ifmariomathtools\mariomathtoolstrue % 'Mathtools' package
+        \newif\ifmariomathamssymb\mariomathamssymbtrue % 'AMSSymb' package
+        \newif\ifmariomathstackrel\mariomathstackreltrue % 'Stackrel' package
+        \newif\ifmariomathunits\mariomathunitstrue % 'Units' package
+    \newif\ifmariothm\mariothmtrue % Theorems definitions
+        \newif\ifmarioboxedthm\marioboxedthmtrue % Boxed theorems
+        \newif\ifmariosecthm\mariosecthmtrue % Number theorems within section
+
+\newif\ifmariomacros\mariomacrostrue % Macros
+
+\newif\ifmarioenviorments\marioenviormentstrue % Enviorments
+
+% Receiving arguments
+\DeclareOption{spanish}{\marioenglishfalse} % Spanish
+
+\DeclareOption{nomargins}{\mariomarginsfalse} % No margins
+
+\DeclareOption{draft}{\marionodraftfalse} % Draft mode
+
+\DeclareOption{nopkg}{\mariopkgfalse} % No basic packages (math neither)
+\DeclareOption{nobasicpkg}{\mariobasicpkgfalse} % No basic packages
+    \DeclareOption{noxcolor}{\marioxcolorfalse} % No 'xcolor' package
+    \DeclareOption{nographicx}{\mariographicxfalse} % No 'graphicx' package
+    \DeclareOption{nofloats}{\mariofloatsfalse} % No 'Floats' package
+    \DeclareOption{nosubfigures}{\mariosubfiguresfalse} % No 'Subfigures' package
+    \DeclareOption{nohyperref}{\mariohyperreffalse} % No 'Hyperref' package
+    \DeclareOption{noeurosym}{\marioeurosymfalse} % No 'Eurosym' package
+\DeclareOption{nomath}{\mariomathfalse} % No math packages neither theorem utilities
+    \DeclareOption{nomathpkg}{\mariomathpkgfalse} % No math packages
+        \DeclareOption{nomathtools}{\mariomathtoolstrue} % No 'Mathtools' package
+        \DeclareOption{nomathamssymb}{\mariomathamssymbfalse} % No 'AMSSymb' package
+        \DeclareOption{nomathstackrel}{\mariomathstackrelfalse} % No 'Stackrel' package
+        \DeclareOption{nomathunits}{\mariomathunitstrue} % No 'Units' package
+    \DeclareOption{nothm}{\mariothmfalse} % No theorems definitions
+        \DeclareOption{noboxedthm}{\marioboxedthmfalse} % No boxed theorems
+        \DeclareOption{nosecthm}{\mariosecthmfalse} % No number theorems within section
+
+\DeclareOption{nomacros}{\mariomacrosfalse} % No macros
+
+\DeclareOption{noenviorments}{\marioenviormentsfalse} % No enviorments
+
+% TODO: Handle unknown options
+
+\ProcessOptions\relax
+% !SECTION
+
+% Required options to some packages
+\PassOptionsToPackage{svgnames, dvipsnames}{xcolor}
+
+% Margins
+\ifmariomargins
+    \usepackage[left=2.54cm, right=2.54cm, top=2.54cm, bottom=2.54cm]{geometry}
+\fi
+
+% Draft mode
+\ifmarionodraft\else
+    \usepackage{todonotes}
+    \setlength{\marginparwidth}{2cm} % Fix margin width for 'todonotes' package
+    \usepackage{lipsum}
+\fi
+
+% Title style
+\ifmarionotitle\else
+    \usepackage{titling}
+
+    \pretitle{\hrule\begin{center}\Large\sffamily\bfseries\color{MidnightBlue}}
+    \posttitle{\end{center}\hrule\par}
+
+    \preauthor{\begin{center}\large\sffamily\begin{tabular}[t]{c}}
+    \postauthor{\end{tabular}\end{center}\par}
+
+    \predate{\begin{center}\large\sffamily}
+    \postdate{\end{center}\par}
+\fi
+
+% Language support
+\ifmarioenglish
+    \usepackage[english]{babel}
+
+    \newcommand{\@theoremname}{Theorem}
+    \newcommand{\@propositionname}{Proposition}
+    \newcommand{\@corollaryname}{Corollary}
+    \newcommand{\@lemmaname}{Lemma}
+    \newcommand{\@conjecturename}{Conjecture}
+    \newcommand{\@definitionname}{Definition}
+    \newcommand{\@examplename}{Example}
+    \newcommand{\@questionname}{Question}
+    \newcommand{\@exercisename}{Exercise}
+    \newcommand{\@problemname}{Problem}
+    \newcommand{\@remarkname}{Remark}
+    \newcommand{\@solutionname}{Solution}
+\else
+    \usepackage[spanish]{babel}
+
+    \newcommand{\@theoremname}{Teorema}
+    \newcommand{\@propositionname}{Proposición}
+    \newcommand{\@corollaryname}{Corolario}
+    \newcommand{\@lemmaname}{Lema}
+    \newcommand{\@conjecturename}{Conjetura}
+    \newcommand{\@definitionname}{Definición}
+    \newcommand{\@examplename}{Ejemplo}
+    \newcommand{\@questionname}{Cuestión}
+    \newcommand{\@exercisename}{Ejercicio}
+    \newcommand{\@problemname}{Problema}
+    \newcommand{\@remarkname}{Nota}
+    \newcommand{\@solutionname}{Solución}
+\fi
+
+% Basic packages (math too)
+\ifmariopkg
+    \ifmariobasicpkg
+        \ifmarioxcolor
+            \usepackage[svgnames]{xcolor}
+        \fi
+        \ifmariographicx
+            \usepackage{graphicx}
+        \fi
+        \ifmariofloats
+            \usepackage{float}
+        \fi
+        \ifmariosubfigures
+            \usepackage{subfig}
+        \fi
+        \ifmariohyperref
+            \usepackage{hyperref}
+            \hypersetup{
+                colorlinks=true,
+                linkcolor=DeepPink,
+                urlcolor=RoyalBlue,
+            }
+        \fi
+        \ifmarioeurosym
+            \usepackage{eurosym}
+        \fi
+    \fi
+
+    \ifmariomath
+        \ifmariomathpkg
+            \ifmariomathtools
+                \usepackage{mathtools}
+            \fi
+            \ifmariomathamssymb
+                \usepackage{amssymb}
+            \fi
+            \ifmariomathstackrel
+                \usepackage{stackrel}
+            \fi
+            \ifmariomathunits
+                \usepackage{units}
+            \fi
+        \fi
+
+        \ifmariothm
+            \usepackage{amsthm}
+            \usepackage{thmtools}
+
+            % Solution enviorment
+            \newenvironment{solution}{\begin{proof}[\@solutionname]}{\end{proof}}
+
+            \ifmarioboxedthm
+                \usepackage[framemethod=TikZ]{mdframed}
+
+                \mdfdefinestyle{mdbluebox}{
+                    roundcorner = 10pt,
+                    linewidth=1pt,
+                    skipabove=12pt,
+                    innerbottommargin=9pt,
+                    skipbelow=2pt,
+                    linecolor=blue,
+                    nobreak=true,
+                    backgroundcolor=RoyalBlue!5,
+		        }
+                \declaretheoremstyle[
+                    headfont=\sffamily\bfseries\color{MidnightBlue},
+                    mdframed={style=mdbluebox},
+                    headpunct={\\[3pt]},
+                    postheadspace={0pt}
+                ]{thmbluebox}
+
+                \mdfdefinestyle{mdredbox}{%
+                    linewidth=0.5pt,
+                    skipabove=12pt,
+                    frametitleaboveskip=5pt,
+                    frametitlebelowskip=0pt,
+                    skipbelow=2pt,
+                    frametitlefont=\bfseries,
+                    innertopmargin=4pt,
+                    innerbottommargin=8pt,
+                    nobreak=true,
+                    backgroundcolor=Salmon!5,
+                    linecolor=RawSienna,
+                }
+                \declaretheoremstyle[
+                    headfont=\sffamily\bfseries\color{RawSienna},
+                    mdframed={style=mdredbox},
+                    headpunct={\\[3pt]},
+                    postheadspace={0pt},
+                ]{thmredbox}
+
+                \mdfdefinestyle{mdgreenbox}{%
+                    skipabove=8pt,
+                    linewidth=2pt,
+                    rightline=false,
+                    leftline=true,
+                    topline=false,
+                    bottomline=false,
+                    linecolor=ForestGreen,
+                    backgroundcolor=ForestGreen!5,
+                }
+                \declaretheoremstyle[
+                    headfont=\bfseries\sffamily\color{ForestGreen!70!black},
+                    bodyfont=\normalfont,
+                    spaceabove=2pt,
+                    spacebelow=1pt,
+                    mdframed={style=mdgreenbox},
+                    headpunct={ --- },
+                ]{thmgreenbox}
+
+                \mdfdefinestyle{mdblackbox}{%
+                    skipabove=8pt,
+                    linewidth=3pt,
+                    rightline=false,
+                    leftline=true,
+                    topline=false,
+                    bottomline=false,
+                    linecolor=black,
+                    backgroundcolor=RedViolet!5!gray!5,
+                }
+                \declaretheoremstyle[
+                    headfont=\sffamily\bfseries,
+                    bodyfont=\normalfont\small,
+                    spaceabove=0pt,
+                    spacebelow=0pt,
+                    mdframed={style=mdblackbox}
+                ]{thmblackbox}
+
+                \ifmariosecthm
+                    \declaretheorem[name=\@theoremname, style=thmbluebox, numberwithin=section]{theorem}
+                \else
+                    \declaretheorem[name=\@theoremname, style=thmbluebox]{theorem}
+                \fi
+
+                % Theorem style
+                \declaretheorem[name=\@theoremname, style=thmbluebox, numbered=no]{theorem*}
+                \declaretheorem[name=\@propositionname, style=thmbluebox, sibling=theorem]{proposition}
+                \declaretheorem[name=\@propositionname, style=thmbluebox, numbered=no]{proposition*}
+                \declaretheorem[name=\@corollaryname, style=thmbluebox, sibling=theorem]{corollary}
+                \declaretheorem[name=\@corollaryname, style=thmbluebox, numbered=no]{corollary*}
+                \declaretheorem[name=\@lemmaname, style=thmbluebox, sibling=theorem]{lemma}
+                \declaretheorem[name=\@lemmaname, style=thmbluebox, numbered=no]{lemma*}
+                \declaretheorem[name=\@conjecturename, style=thmbluebox, sibling=theorem]{conjecture}
+                \declaretheorem[name=\@conjecturename, style=thmbluebox, numbered=no]{conjecture*}
+
+                % Definition style
+                \declaretheorem[name=\@definitionname, style=thmredbox, sibling=theorem]{definition}
+                \declaretheorem[name=\@definitionname, style=thmredbox, numbered=no]{definition*}
+
+                % Example style
+                \declaretheorem[name=\@examplename, style=thmgreenbox, sibling=theorem]{example}
+                \declaretheorem[name=\@examplename, style=thmgreenbox, numbered=no]{example*}
+                
+                % Questions style
+                \declaretheorem[name=\@questionname, style=thmblackbox, sibling=theorem]{question}
+                \declaretheorem[name=\@questionname, style=thmblackbox, numbered=no]{question*}
+                \declaretheorem[name=\@exercisename, style=thmblackbox, sibling=theorem]{exercise}
+                \declaretheorem[name=\@exercisename, style=thmblackbox, numbered=no]{exercise*}
+                \declaretheorem[name=\@problemname, style=thmblackbox, sibling=theorem]{problem}
+                \declaretheorem[name=\@problemname, style=thmblackbox, numbered=no]{problem*}
+
+                % Remark style
+                \declaretheorem[name=\@remarkname, style=thmgreenbox, sibling=theorem]{remark}
+                \declaretheorem[name=\@remarkname, style=thmgreenbox, numbered=no]{remark*}
+            \else
+                \ifmariosecthm
+                    \declaretheorem[name=\@theoremname, numberwithin=section]{theorem}
+                \else
+                    \declaretheorem[name=\@theoremname]{theorem}
+                \fi
+
+                \declaretheorem[name=\@theoremname, numbered=no]{theorem*}
+                \declaretheorem[name=\@propositionname, sibling=theorem]{proposition}
+                \declaretheorem[name=\@propositionname, numbered=no]{proposition*}
+                \declaretheorem[name=\@corollaryname, sibling=theorem]{corollary}
+                \declaretheorem[name=\@corollaryname, numbered=no]{corollary*}
+                \declaretheorem[name=\@lemmaname, sibling=theorem]{lemma}
+                \declaretheorem[name=\@lemmaname, numbered=no]{lemma*}
+                \declaretheorem[name=\@conjecturename, sibling=theorem]{conjecture}
+                \declaretheorem[name=\@conjecturename, numbered=no]{conjecture*}
+
+                \theoremstyle{definition}
+                \declaretheorem[name=\@definitionname, sibling=theorem]{definition}
+                \declaretheorem[name=\@definitionname, numbered=no]{definition*}
+                \declaretheorem[name=\@examplename, sibling=theorem]{example}
+                \declaretheorem[name=\@examplename, numbered=no]{example*}
+                \declaretheorem[name=\@questionname, sibling=theorem]{question}
+                \declaretheorem[name=\@questionname, numbered=no]{question*}
+                \declaretheorem[name=\@exercisename, sibling=theorem]{exercise}
+                \declaretheorem[name=\@exercisename, numbered=no]{exercise*}
+                \declaretheorem[name=\@problemname, sibling=theorem]{problem}
+                \declaretheorem[name=\@problemname, numbered=no]{problem*}
+
+                \theoremstyle{remark}
+                \declaretheorem[name=\@remarkname, sibling=theorem]{remark}
+                \declaretheorem[name=\@remarkname, numbered=no]{remark*}
+            \fi
+        \fi
+    \fi
+\fi
+
+\ifmariomacros
+    % Language macros
+    \providecommand{\guillemot}[1]{\guillemotleft{}#1\guillemotright{}}
+
+    % Math macros
+    \ifmariomath
+        \RequirePackage{mathtools}
+        \RequirePackage{amssymb}
+        %- Sets
+        \providecommand{\set}[1]{\ensuremath{\left\lbrace#1\right\rbrace}}
+        \providecommand{\gen}[1]{\ensuremath{\left\langle#1\right\rangle}}
+
+        \providecommand{\bb}[1]{\ensuremath{\mathbb{#1}}}
+        \providecommand{\NN}{\ensuremath{\mathbb{N}}} % Natural numbers
+        \providecommand{\ZZ}{\ensuremath{\mathbb{Z}}} % Integer numbers
+        \providecommand{\QQ}{\ensuremath{\mathbb{Q}}} % Rational numbers
+        \providecommand{\II}{\ensuremath{\mathbb{I}}} % Irrational numbers
+        \providecommand{\RR}{\ensuremath{\mathbb{R}}} % Real numbers
+        \providecommand{\CC}{\ensuremath{\mathbb{C}}} % Complex numbers
+        
+        \providecommand{\ooset}[1]{\ensuremath{\left(#1\right)}} % Open-open interval
+        \providecommand{\ocset}[1]{\ensuremath{\left(#1\right]}} % Open-close interval
+        \providecommand{\coset}[1]{\ensuremath{\left[#1\right)}} % Close-open interval
+        \providecommand{\ccset}[1]{\ensuremath{\left[#1\right]}} % Close-close interval
+
+        \providecommand{\abs}[1]{\ensuremath{\left|#1\right|}} % Absolute value
+        \providecommand{\norm}[1]{\ensuremath{\left\lVert#1\right\rVert}} % Norm
+
+        \ifmarioenglish
+            \providecommand{\hcf}{\ensuremath{\text{hcf}}} % Highest common factor
+            \providecommand{\lcm}{\ensuremath{\text{lcm}}} % Lowest common multiple
+        \else
+            \providecommand{\mcd}{\ensuremath{\text{mcd}}} % Greatest common divisor
+            \providecommand{\mcm}{\ensuremath{\text{mcm}}} % Least common multiple
+        \fi
+
+        \providecommand{\dx}[1][x]{\ensuremath{\text{d}#1}} % Differential
+    \fi
+\fi
+
+\ifmarioenviorments
+    % TODO: Define enviorments
+\fi
